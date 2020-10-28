@@ -1,7 +1,7 @@
 import React from "react";
 import {NavigationContainer} from "@react-navigation/native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
-//import {Icon} from "react-native-elements";
+import {Icon} from "react-native-elements";
 
 import MiCuentaStack from "../navigations/MiCuentaStack"
 import MapaStack from "./MapaStack";
@@ -15,11 +15,11 @@ export default function Navigation(){
                 initialRouteName="micuenta"
                 tabBarOptions={{
                     inactiveTintColor:"#646464",
-                    activeTintColor: "#f05449"
+                    activeTintColor: "#FF7E00"
                 }}
-                /*screenOptions={({ route }) => ({
+                screenOptions={({ route }) => ({
                     tabBarIcon: ({ color }) => screenOptions(route, color),
-                })}*/
+                })}
             >
                 <Tab.Screen name="micuenta" 
                 component={MiCuentaStack}
@@ -32,11 +32,14 @@ export default function Navigation(){
     );
 }
 
-/*function screenOptions(route, color){
+function screenOptions(route, color){
     let iconName;
     switch (route.name) {
-        case "micuenta":
+        case "mapa":
             iconName = "compass-outline"
+            break;
+        case "micuenta":
+            iconName = "account-circle"
             break;
         default:
             break;         
@@ -45,4 +48,4 @@ export default function Navigation(){
     <Icon type = "material-community" name={iconName}
     size={22} color={color}/>
     );
-}*/
+}

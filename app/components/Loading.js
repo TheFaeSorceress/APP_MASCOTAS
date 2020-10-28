@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         height: 100,
         width: 200,
         backgroundColor: "#fff",
-        borderColor: "#00a680",
+        borderColor: "#FF7E00",
         borderWidth: 2,
         borderRadius: 10,
     },
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         justifyContent:"center",
     },
     text:{
-        color: "#00a680",
+        color: "#FF7E00",
         textTransform: "uppercase",
         marginTop:10,
     },
