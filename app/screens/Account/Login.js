@@ -1,39 +1,68 @@
 import React from "react";
-import {StyleSheet, View, ScrollView, Text, Image} from "react-native";
-import {Divider} from "react-native-elements";
-import {useNavigation} from "@react-navigation/native";
+import { StyleSheet, View, ScrollView, Image, Button, ImageBackground } from "react-native";
+import { Divider } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
+import { ThemeProvider, Input, Text } from 'react-native-elements';
 
-export default function Login(){
-    return(
-        <ScrollView>
-            <Image
-                source={require("../../../assets/img/logo_petfinder_letras_orange.png")}
-                resizeMode= "contain"
-                style={styles.logo}
-            />
-            <View style={styles.viewContainer}>
-                <Text>
-                    Login FORM
-                </Text>
-                <CreateAccount />
-            </View>
-            <Divider style={styles.divider}/>
-            <Text>
-                Social Login
-            </Text>
-        </ScrollView>
+export default function Login() {
+    const navigation = useNavigation();
+    return (
+
+
+
+        <ScrollView style={{
+            backgroundColor: "#EDB506",
+            justify: "Center",
+            textAlign: "center",
+        }}>
+            <ImageBackground
+                source={require("../../../assets/img/27 Super Pretty iPhone 8 Plus Wallpapers _ Preppy Wallpapers.jpg")}
+                resizeMode="contain"
+                style={styles.background}
+            >
+                <View style={styles.viewContainer}>
+                    <Image
+                        source={require("../../../assets/img/logo_petfinder_letras_blanco.png")}
+                        resizeMode="contain"
+                        style={styles.logo}
+                    />
+                    <div style={{
+                        paddingTop: "85%",
+                    }}>
+
+                        <Button
+                            title={<span style={{ color: "#EDB506" }}>Registrarme</span>}
+                            color="white"
+                            style={styles.button}
+                            onPress={() => navigation.navigate("register")}
+                        >
+                        </Button>
+
+                        <Button
+                            title={<span style={{ color: "white" }}>Ingresar</span>}
+                            color="#EDB506"
+                            style={styles.button}
+                            onPress={() => navigation.navigate("ingreso")}
+
+                        >
+                        </Button>
+
+                    </div>
+                </View>
+            </ImageBackground>
+        </ScrollView >
     );
 }
 
-function CreateAccount(){
+function CreateAccount() {
     const navigation = useNavigation();
 
-    return(
+    return (
         <Text style={styles.textRegister}>
             ¿Aún no tienes una cuenta?{" "}
-            <Text 
-            style ={styles.btnRegister}
-            onPress={() =>  navigation.navigate("register")}>
+            <Text
+                style={styles.btnRegister}
+                onPress={() => navigation.navigate("register")}>
                 Registrate aquí
             </Text>
         </Text>
@@ -41,25 +70,35 @@ function CreateAccount(){
 }
 
 const styles = StyleSheet.create({
-    logo:{
+
+    background: {
+        width: "100%",
+    },
+    button: {
+        width: "100%",
+        backgroundColor: "red",
+        margin: "10px",
+    },
+    logo: {
         width: "100%",
         height: 150,
         marginTop: 20,
     },
-    viewContainer:{
+    viewContainer: {
+        display: "flex",
         marginRight: 40,
         marginLeft: 40,
     },
-    textRegister:{
+    textRegister: {
         marginTop: 15,
-        marginLeft:10,
+        marginLeft: 10,
         marginRight: 10,
     },
-    btnRegister:{
+    btnRegister: {
         color: "#FF7E00",
         fontWeight: "bold",
     },
-    divider:{
+    divider: {
         backgroundColor: "#FF7E00",
         margin: 40,
     },

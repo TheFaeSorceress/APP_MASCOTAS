@@ -4,9 +4,10 @@ import * as firebase from "firebase";
 import Loading from "../../components/Loading";
 import UsuarioInvitado from "./UsuarioInvitado";
 import UsuarioLogger from "./UsuarioLogger";
+import Login from "./Login";
 
 
-export default function Micuenta(){
+export default function Micuenta() {
     const [login, setLogin] = useState(null);
 
     useEffect(() => {
@@ -15,7 +16,7 @@ export default function Micuenta(){
         });
     }, []);
 
-    if(login == null) return <Loading isVisible={true} text="Cargando..."/>;
+    if (login == null) return <Loading isVisible={true} text="Cargando..." />;
 
-    return login ? <UsuarioLogger/> : <UsuarioInvitado />;
+    return login ? <UsuarioLogger /> : <Login />;
 }

@@ -1,23 +1,23 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import {Input, Icon, Button} from "react-native-elements";
-import {validateEmail} from "../../utils/validations";
+import { Input, Icon, Button } from "react-native-elements";
+import { validateEmail } from "../../utils/validations";
 
-export default function RegisterForm(){
+export default function RegisterForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
     const [formData, setFormData] = useState(defaultFormValue());
-    
+
     const onSubmit = () => {
         console.log(formData);
         console.log(validateEmail(formData.email));
     }
 
     const onChange = (e, type) => {
-        setFormData({ ...formData, [type]: e.nativeEvent.text})
+        setFormData({ ...formData, [type]: e.nativeEvent.text })
     }
 
-    return(
+    return (
         <View style={styles.formContainer}>
             <Input
                 placeholder="Correo electronico"
@@ -29,7 +29,7 @@ export default function RegisterForm(){
                         name="at"
                         iconStyle={styles.iconRight}
                     />
-                }            
+                }
             />
             <Input
                 placeholder="Contraseña"
@@ -44,7 +44,7 @@ export default function RegisterForm(){
                         iconStyle={styles.iconRight}
                         onPress={() => setShowPassword(!showPassword)}
                     />
-                }   
+                }
             />
             <Input
                 placeholder="Repetir contraseña"
@@ -59,46 +59,51 @@ export default function RegisterForm(){
                         iconStyle={styles.iconRight}
                         onPress={() => setShowRepeatPassword(!showRepeatPassword)}
                     />
-                }   
+                }
             />
             <Button
                 title="Registrarse"
                 containerStyle={styles.containerRegister}
-                buttonStyle={styles.btnRegister}            
+                buttonStyle={styles.btnRegister}
                 onPress={onSubmit}
+                style={{ margin: "15px" }}
             />
         </View>
     );
 }
 
-function defaultFormValue(){
-    return{
+function defaultFormValue() {
+    return {
         email: "",
-        password:  "",
+        password: "",
         repeatPassword: "",
     };
 }
 
 const styles = StyleSheet.create({
-    formContainer:{
-        flex: 1,
+    formContainer: {
+        height: "100%",
+        width: "100%",
+        display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        marginTop:30,
-        
+
+        marginTop: 30,
+
     },
-    inputForm:{
-        width:"100%",
+    inputForm: {
+        margin: "15px",
+        width: "100%",
         height: 20,
     },
-    containerRegister:{
+    containerRegister: {
         marginTop: 40,
-        width: "95%",
+        width: "100%",
     },
-    btnRegister:{
+    btnRegister: {
         backgroundColor: "#FF7E00",
+        width: "100%",
     },
-    iconRight:{
-        color:"#c1c1c1",
+    iconRight: {
+        color: "#c1c1c1",
     },
 });

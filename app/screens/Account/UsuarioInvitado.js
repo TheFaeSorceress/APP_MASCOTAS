@@ -1,13 +1,16 @@
 import React from "react";
-import {StyleSheet, View, ScrollView, Text, Image} from "react-native";
+import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
 import { Button } from "react-native-elements";
 import { NavigationHelpersContext, useNavigation } from "@react-navigation/native";
 
-export default function UsuarioInvitado(){
+export default function UsuarioInvitado() {
     const navigation = useNavigation();
-    
-    return(
-        <ScrollView centerContent={true}>
+
+    return (
+        <ScrollView
+            style={{ backgroundColor: "red" }}
+            centerContent={true}
+        >
             <Image
                 source={require("../../../assets/img/user-guest.jpg")}
                 resizeMode="contain"
@@ -16,7 +19,7 @@ export default function UsuarioInvitado(){
             <Text style={styles.title}>
                 Consulta tu perfil de PetFinder
             </Text>
-            <Text style={styles.description}> 
+            <Text style={styles.description}>
                 Reporta animales en situación de extravío y/o calle
             </Text>
             <View style={styles.viewBtn}>
@@ -27,7 +30,7 @@ export default function UsuarioInvitado(){
                     onPress={() => navigation.navigate("login")}
                 />
             </View>
-        </ScrollView>
+        </ScrollView >
     );
 }
 
@@ -36,13 +39,14 @@ const styles = StyleSheet.create({
         marginLeft: 30,
         marginRight: 30,
     },
-    image:{
+    image: {
         height: 300,
         width: "100%",
         marginBottom: 40,
+        backgroundColor: "red",
     },
-    title:{
-        fontWeight:"bold",
+    title: {
+        fontWeight: "bold",
         fontSize: 19,
         marginBottom: 10,
         textAlign: "center",
@@ -51,7 +55,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginBottom: 20,
     },
-    viewBtn:{
+    viewBtn: {
         flex: 1,
         alignItems: "center",
     },
@@ -62,4 +66,4 @@ const styles = StyleSheet.create({
         width: "50%",
     },
 })
-    
+
