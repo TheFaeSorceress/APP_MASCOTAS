@@ -5,6 +5,7 @@ import {Icon} from "react-native-elements";
 
 import MiCuentaStack from "../navigations/MiCuentaStack"
 import MapaStack from "./MapaStack";
+import ReportesStack from "./ReportesStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -27,6 +28,9 @@ export default function Navigation(){
                 <Tab.Screen name="mapa" 
                 component={MapaStack}
                 options={{title: "Mapa"}}/>
+                <Tab.Screen name="reportes" 
+                component={ReportesStack}
+                options={{title: "Reportes"}}/>
             </Tab.Navigator>
         </NavigationContainer>
     );
@@ -40,6 +44,9 @@ function screenOptions(route, color){
             break;
         case "micuenta":
             iconName = "account-circle"
+            break;
+        case "reportes":
+            iconName = "paw"
             break;
         default:
             break;         
