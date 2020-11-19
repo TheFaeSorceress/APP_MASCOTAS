@@ -31,7 +31,7 @@ export default function Login() {
                     }}>
 
                         <Button
-                            title={<span style={{ color: "#EDB506" }}>Registrarme</span>}
+                            title='Registrarme'
                             color="white"
                             style={styles.button}
                             onPress={() => navigation.navigate("register")}
@@ -39,7 +39,7 @@ export default function Login() {
                         </Button>
 
                         <Button
-                            title={<span style={{ color: "white" }}>Ingresar</span>}
+                            title='Ingresar'
                             color="#EDB506"
                             style={styles.button}
                             onPress={() => navigation.navigate("ingreso")}

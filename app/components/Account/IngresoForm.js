@@ -56,7 +56,7 @@ export default function RegisterForm() {
                     onPress={onSubmit}
                 />
                 <Button
-                    title={"Ingresar con cuenta Google"}
+                    title="Ingresar con cuenta Google"
                     containerStyle={styles.containerRegister}
                     buttonStyle={{ backgroundColor: "#16974F", }}
                     onPress={onSubmit}
