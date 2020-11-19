@@ -34,9 +34,6 @@ function FormAdd(props){
             <Input
                 placeholder="Nombre de la mascota"
                 containerStyle={styles.input}
-                //Descripción --Input
-                //Foto - Cámara
-                //Ubicación --Google Maps
             />
             <Text>
                 Tipo de Reporte:
@@ -101,7 +98,11 @@ function FormAdd(props){
                     color:"#c2c2c2",
                     onPress: () => setIsVisibleMap(true),
                 }}
-            />   
+            />
+            <Button
+                title="Reportar"
+                buttonStyle={styles.btnReportar}
+            />  
         </View>
     )
 }
@@ -111,7 +112,7 @@ function UploadImage(){
         const resultPermissions = await Permissions.askAsync(
             Permissions.CAMERA_ROLL
         );
-        console.log(resultPermissions)
+        console.log(resultPermissions);
     };
     return(
         <View

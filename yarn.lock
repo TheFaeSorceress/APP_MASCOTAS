@@ -5548,6 +5548,11 @@ react-native-material@^0.0.4:
     color "^1.0.3"
     deep-assign "^2.0.0"
 
+react-native-permissions@^3.0.0-beta.2:
+  version "3.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.0.0-beta.2.tgz#b315c018dade7694f7f3ef9880d7ffcbc3a58ff7"
+  integrity sha512-O2hP2vqarT1QHQq0pcXEevHtbOQ92nAqqTYFuEkgGNb2u6wYAOLNhhuuPb7DKqk1pXdUeU9Ihd2LGn82jFqOWg==
+
 react-native-ratings@^7.3.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-7.3.0.tgz#32e11e4ed944ba8adbbc995d601df3f131619b6f"

@@ -5,7 +5,7 @@ import Reportes from "../screens/Reportes/Reportes";
 import Login from "../screens/Account/Login";
 import Register from "../screens/Account/Register";
 import Ingresar from "../screens/Account/Ingresar";
-
+import UsuarioLogged from "../screens/Account/UsuarioLogger";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +36,11 @@ export default function MiCuentaStack() {
                 name="ingreso"
                 component={Ingresar}
                 options={{ title: "Ingresar" }}
+            />
+            <Stack.Screen
+                name="usuario_loggeado"
+                component={UsuarioLogged}
+                options={{ title: "Mi Perfil" }}
             />
         </Stack.Navigator>
     )
