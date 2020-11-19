@@ -1,22 +1,31 @@
-import React, {useState, useRef} from "react";
-import {View} from "react-native";
+import React, { useState, useRef } from "react";
+import { View } from "react-native";
 //import Toast from "react-native-easy-toast";
 //import Loading from "../../components/Loading";
 import NuevoReporteForm from "../Reportes/NuevoReporteForm";
 
-export default function NuevoReporte(props){
-    const {navigation} = props;
+export default function NuevoReporte(props) {
+    console.log(props);
+    const { navigation, params, route } = props;
+    let mascota, setAnimales;
+    if (route.params) {
+        mascota = route.params.mascota;
+        setAnimales = route.params.setAnimales;
+    }
+
     //const [isLoading, setIsLoading] = useState(false);
     //const toastRef = useRef();
-    return(
+    return (
         <View>
             <NuevoReporteForm
+                mascota={mascota}
+                setAnimales={setAnimales}
                 //toastRef={toastRef}
                 //setIsLoading={setIsLoading}
                 navigation={navigation}
             />
-    
-            
+
+
         </View>
     );
 }

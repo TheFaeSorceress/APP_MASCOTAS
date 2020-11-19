@@ -20,6 +20,7 @@ export default function RegisterForm() {
     }
 
     return (
+        
         <View style={styles.formContainer}>
             <Input
                 placeholder="Correo electronico"
@@ -53,7 +54,7 @@ export default function RegisterForm() {
                     title="Ingresar"
                     containerStyle={styles.containerRegister}
                     buttonStyle={{ backgroundColor: "#FF7E00", }}
-                    onPress={onSubmit}
+                    onPress={() => navigation.navigate("usuario_loggeado")}
                 />
                 <Button
                     title="Ingresar con cuenta Google"
