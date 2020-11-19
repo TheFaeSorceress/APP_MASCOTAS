@@ -106,6 +106,18 @@ function FormAdd(props){
     )
 }
 
+function Map(props){
+    const {isVisibleMap, setIsVisibleMap} = props;
+
+    return(
+        <Modal isVisible ={isVisibleMap} setIsVisible={setIsVisibleMap}>
+            <Text>
+                Mapa
+            </Text>
+        </Modal>
+    );
+}
+
 function UploadImage(){
     const ImageSelect = async () => {
         const resultPermissions = await Permissions.askAsync(
@@ -127,20 +139,6 @@ function UploadImage(){
         </View>
     )
 }
-
-function Map(props){
-    const {isVisibleMap, setIsVisibleMap} = props;
-
-    return(
-        <Modal isVisible ={isVisibleMap} setIsVisible={setIsVisibleMap}>
-            <Text>
-                Mapa
-            </Text>
-        </Modal>
-    );
-}
-
-
 
 const styles = StyleSheet.create({
     scrollView: {

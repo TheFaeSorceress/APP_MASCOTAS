@@ -7,9 +7,6 @@ import { ThemeProvider, Input, Text } from 'react-native-elements';
 export default function Login() {
     const navigation = useNavigation();
     return (
-
-
-
         <ScrollView style={{
             backgroundColor: "#EDB506",
             justify: "Center",
@@ -26,9 +23,6 @@ export default function Login() {
                         resizeMode="contain"
                         style={styles.logo}
                     />
-                    <div style={{
-                        paddingTop: "85%",
-                    }}>
 
                         <Button
                             title='Registrarme'
@@ -47,7 +41,6 @@ export default function Login() {
                         >
                         </Button>
 
-                    </div>
                 </View>
             </ImageBackground>
         </ScrollView >

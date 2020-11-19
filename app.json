@@ -22,7 +22,13 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "android": {},
+    "android": {
+      "permissions":[
+        "LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
     "description": ""
   }
 }
