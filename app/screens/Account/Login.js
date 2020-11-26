@@ -13,7 +13,7 @@ export default function Login() {
             textAlign: "center",
         }}>
             <ImageBackground
-                source={require("../../../assets/img/27 Super Pretty iPhone 8 Plus Wallpapers _ Preppy Wallpapers.jpg")}
+                source={require("../../../assets/img/black_dog.jpg")}
                 resizeMode="contain"
                 style={styles.background}
             >

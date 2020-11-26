@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     StyleSheet,
     View,
@@ -12,9 +12,16 @@ import { Icon, Avatar, Image, Input, Button } from "react-native-elements";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import Modal from "../../components/Modal";
+import * as Location from "expo-location";
+import MapView from "react-native-maps";
 
 export default function NuevoReporteForm(props) {
+    const {toastRef} = props;
     const [isVisibleMap, setIsVisibleMap] = useState(false);
+    const [locationPet, setLocationPet] = useState(null);
+    const [imageSelected, setImageSelected] = useState([]);
+
+    console.log(imageSelected);
 
     return (
         <ScrollView style={StyleSheet.ScrollView}>
@@ -24,25 +31,31 @@ export default function NuevoReporteForm(props) {
                 setIsVisibleMap={setIsVisibleMap}
                 navigation={props.navigation}
             />
-            <UploadImage />
+            <UploadImage 
+                toastRef={toastRef}
+                ImageSelect={imageSelected}
+                setImageSelected={setImageSelected}
+            />
             <Button
                 title="Reportar"
                 containerStyle={styles.containerReportar}
                 buttonStyle={styles.btnReportar}
-                style={{ margin: "15px" }}
+                style={{ margin: 15 }}
                 onPress={() => {
-                    console.log("llegoHastaBoton");
                     setAnimales(mascota);
                 }}
             />
-            <Map isVisibleMap={isVisibleMap} setIsVisibleMap={setIsVisibleMap} />
+            <Map 
+                isVisibleMap={isVisibleMap} 
+                setIsVisibleMap={setIsVisibleMap} 
+                setLocationPet={setLocationPet}
+                toastRef={toastRef}
+            />
         </ScrollView>
     );
 }
 
 function FormAdd(props) {
-    console.log("PROPS");
-    console.log(props);
     const { setAnimales, navigation } = props;
     const [mascota, setMascota] = useState(
         !props.mascota
@@ -58,14 +71,9 @@ function FormAdd(props) {
 
 
     const { setIsVisibleMap } = props;
-    console.log("MASCOTA");
-    console.log(mascota);
 
 
     const onChange = (e) => {
-        console.log(e);
-        console.log(e.target.name);
-        console.log(e.target.value);
         mascota[e.target.name] = e.target.value;
         setMascota(mascota);
     }
@@ -88,10 +96,8 @@ function FormAdd(props) {
                 style={{ height: 30, width: "100%" }}
                 value={mascota.tipoReporteID}
                 onValueChange={(itemValue, itemIndex) => {
-                    console.log(itemValue);
                     mascota.tipoReporteID = itemValue;
                     setMascota({ ...mascota });
-                    console.log(mascota);
                 }
                 }>
 
@@ -161,6 +167,12 @@ function FormAdd(props) {
             <Input
                 placeholder="Dirección"
                 containerStyle={styles.input}
+                rightIcon={{
+                    type: "material-community",
+                    name: "google-maps",
+                    color:"#c2c2c2",
+                    onPress: () => setIsVisibleMap(true),
+                }}
                 value={mascota.Dir}
                 onChange={
                     (e) => {
@@ -171,25 +183,36 @@ function FormAdd(props) {
                 name={"Dir"}
 
             />
-            <Button
-                onPress={() => {
-                    console.log("llegoHastaBoton");
-                    setAnimales(mascota);
-                    navigation.navigate("reportes");
-                }}
-                title={mascota.index >= 0 ? "Guardar" : "Reportar"}
-                buttonStyle={styles.btnReportar}
-            />
         </View>
     );
 }
 
-function UploadImage() {
+function UploadImage(props) {
+    const {toastRef, setImageSelected, imageSelected} = props;
     const ImageSelect = async () => {
         const resultPermissions = await Permissions.askAsync(
             Permissions.CAMERA_ROLL
         );
-        console.log(resultPermissions);
+        if(resultPermissions === "denied"){
+            toastRef.current.show(
+                "Debe aceptar los permisos de la galeria para seleccionar imagen de la mascota",
+                3000
+            );
+        }else{
+            const result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [4,3],
+            });
+            if(result.cancelled){
+                toastRef.current.show(
+                    "Has cerrado la galeria sin seleccionar ninguna imagen",
+                    3000,
+                )
+            }else{
+                //console.log(result.uri);
+                setImageSelected(result.uri);
+            }
+        }
     };
     return (
         <View style={styles.viewImages}>
@@ -205,11 +228,77 @@ function UploadImage() {
 }
 
 function Map(props) {
-    const { isVisibleMap, setIsVisibleMap } = props;
+    const { isVisibleMap, setIsVisibleMap, setLocationPet, toastRef } = props;
+    const [location, setLocation] = useState(null);
+    
+
+    useEffect(() => {
+        (async ()=> {
+            const resultPermissions = await Permissions.askAsync(
+                Permissions.LOCATION
+            );
+            const statusPermissions = resultPermissions.permissions.location.status;
+            if(statusPermissions !== "granted"){
+                toastRef.current.show(
+                    "Tienes que aceptar los permisos de localizacion para guardar la direccion del reporte",
+                    3000
+                );
+            }else{
+                const loc = await Location.getCurrentPositionAsync({});
+                setLocation({
+                    latitude: loc.coords.latitude,
+                    longitude: loc.coords.longitude,
+                    latitudeDelta: 0.001,
+                    longitudeDelta: 0.001,
+                })
+            }
+        })()
+        return () => {
+            
+        }
+    }, [])
+
+    const confirmLocation = () => {
+        console.log(location)
+        setLocationPet(location);
+        toastRef.current.show("Localizacion guardada correctamente");
+        setIsVisibleMap(false);
+    }
 
     return (
         <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
-            <Text>Mapa</Text>
+            <View>
+                {location && (
+                    <MapView
+                        style={styles.mapStyle}
+                        initialRegion={location}
+                        showUserLocation={true}
+                        onRegionChange={(region) => setLocation(region)}
+                    >
+                        <MapView.Marker 
+                            coordinate={{
+                                latitude: location.latitude,
+                                longitude: location.longitude
+                            }}
+                            draggable
+                        />
+                    </MapView>
+                )}
+                <View style={styles.viewMapBtn}>
+                        <Button 
+                            title="Guardar Ubicacion" 
+                            containerStyle={styles.viewMapBtnContainerSave}
+                            buttonStyle={styles.viewMapBtnSave}
+                            onPress={() => confirmLocation()}
+                        />
+                        <Button 
+                            title="Cancelar Ubicacion" 
+                            containerStyle={styles.viewMapBtnContainerCancel}
+                            buttonStyle={styles.viewMapBtnCancel}
+                            onPress={() => setIsVisibleMap(false)}
+                        />
+                </View>
+            </View>
         </Modal>
     );
 }
@@ -247,4 +336,25 @@ const styles = StyleSheet.create({
         width: 70,
         backgroundColor: "#e3e3e3",
     },
+    mapStyle: {
+        width: "100%",
+        height: 550,
+    },
+    viewMapBtn: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 10,
+    },
+    viewMapBtnContainerCancel: {
+        paddingLeft: 5,
+    },
+    viewMapBtnCancel: {
+        backgroundColor: "#a60d0d",
+    },
+    viewMapBtnContainerSave: {
+        paddingRight: 5,
+    },
+    viewMapBtnSave: {
+        backgroundColor: "#00a680"
+    }
 });

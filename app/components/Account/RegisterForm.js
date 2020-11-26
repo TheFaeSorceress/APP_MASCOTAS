@@ -82,7 +82,7 @@ export default function RegisterForm(props) {
                 containerStyle={styles.containerRegister}
                 buttonStyle={styles.btnRegister}
                 onPress={onSubmit}
-                style={{ margin: "15px" }}
+                style={{ margin: 15 }}
             />
         </View>
     );
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
 
     },
     inputForm: {
-        margin: "15px",
+        margin: 15,
         width: "100%",
         height: 20,
     },

@@ -44,12 +44,10 @@ export default function Reportes(props) {
     const setAnimales = (nuevaMascota) => {
         const copia = [...mascotas]
         if (nuevaMascota.index >= 0) {
-            console.log("index");
             copia[nuevaMascota.index] = nuevaMascota;
 
         }
         else {
-            console.log("NO index");
             nuevaMascota.date = "19 de noviembre del 2020"
             nuevaMascota.index = copia.length;
             copia.push(nuevaMascota);
@@ -58,20 +56,19 @@ export default function Reportes(props) {
     }
 
     useEffect(() => {
-        console.log("useeffect");
         return () => {
         }
     })
 
     return (
-        <>
+        <View style={styles.viewBody}>
             <ScrollView style={styles.viewBody}>
                 {
                     mascotas.map((l, i) => (
                         <ListItem key={i} bottomDivider>
                             <Avatar source={{ uri: l.avatar_url }} />
                             <ListItem.Content>
-                                <ListItem.Title><span style={{ fontWeight: "500" }}>{l.name}</span></ListItem.Title>
+                                <ListItem.Title>{l.name}</ListItem.Title>
                                 <ListItem.Subtitle>{l.tipoReporteID === 1 ? "Perdido" : "Visto"}</ListItem.Subtitle>
                                 <ListItem.Subtitle>{l.date}</ListItem.Subtitle>
                             </ListItem.Content>
@@ -88,22 +85,16 @@ export default function Reportes(props) {
                         </ListItem>
                     ))
                 }
-
-
             </ScrollView>
-            <TouchableOpacity>
-                <Icon
-                    reverse
-                    type="material-community"
-                    name="plus"
-                    color="#EDB506"
-                    containerStyle={styles.btnContainer}
-                    onPress={() => navigation.navigate("nuevo_reporte"
-                        , { setAnimales }
-                    )}
-                />
-            </TouchableOpacity>
-        </>
+            <Icon 
+            reverse
+            type="material-community"
+            name="plus"
+            color="#EDB506"
+            containerStyle = {styles.btnContainer}	
+            onPress = {() => navigation.navigate("nuevo_reporte")}
+            />
+        </View>
     );
 }
 
@@ -122,3 +113,4 @@ const styles = StyleSheet.create({
 
     },
 })
+

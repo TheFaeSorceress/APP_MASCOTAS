@@ -49,7 +49,6 @@ export default function RegisterForm() {
                     />
                 }
             />
-            <div style={{ marginTop: "30px" }}  >
                 <Button
                     title="Ingresar"
                     containerStyle={styles.containerRegister}
@@ -70,7 +69,6 @@ export default function RegisterForm() {
                     buttonStyle={{ backgroundColor: "#355BA6", }}
                     onPress={onSubmit}
                 />
-            </div>
         </View >
     );
 }
@@ -93,7 +91,7 @@ const styles = StyleSheet.create({
 
     },
     inputForm: {
-        margin: "15px",
+        margin: 15,
         width: "100%",
         height: 20,
     },
