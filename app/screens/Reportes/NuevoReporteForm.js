@@ -16,12 +16,15 @@ import * as Location from "expo-location";
 import MapView from "react-native-maps";
 
 export default function NuevoReporteForm(props) {
-    const {toastRef} = props;
+    const {toastRef, setAnimales, mascota} = props;
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [locationPet, setLocationPet] = useState(null);
     const [imageSelected, setImageSelected] = useState([]);
 
-    console.log(imageSelected);
+
+    const savePet = () =>{
+        console.log(imageSelected);
+    }
 
     return (
         <ScrollView style={StyleSheet.ScrollView}>
@@ -33,7 +36,7 @@ export default function NuevoReporteForm(props) {
             />
             <UploadImage 
                 toastRef={toastRef}
-                ImageSelect={imageSelected}
+                imageSelected={imageSelected}
                 setImageSelected={setImageSelected}
             />
             <Button
@@ -41,9 +44,7 @@ export default function NuevoReporteForm(props) {
                 containerStyle={styles.containerReportar}
                 buttonStyle={styles.btnReportar}
                 style={{ margin: 15 }}
-                onPress={() => {
-                    setAnimales(mascota);
-                }}
+                onPress={savePet}
             />
             <Map 
                 isVisibleMap={isVisibleMap} 
@@ -57,6 +58,7 @@ export default function NuevoReporteForm(props) {
 
 function FormAdd(props) {
     const { setAnimales, navigation } = props;
+
     const [mascota, setMascota] = useState(
         !props.mascota
             ? {
@@ -189,6 +191,7 @@ function FormAdd(props) {
 
 function UploadImage(props) {
     const {toastRef, setImageSelected, imageSelected} = props;
+
     const ImageSelect = async () => {
         const resultPermissions = await Permissions.askAsync(
             Permissions.CAMERA_ROLL
@@ -207,10 +210,9 @@ function UploadImage(props) {
                 toastRef.current.show(
                     "Has cerrado la galeria sin seleccionar ninguna imagen",
                     3000,
-                )
+                );
             }else{
-                //console.log(result.uri);
-                setImageSelected(result.uri);
+                setImageSelected([...imageSelected, result.uri]);
             }
         }
     };
@@ -261,7 +263,8 @@ function Map(props) {
     const confirmLocation = () => {
         console.log(location)
         setLocationPet(location);
-        toastRef.current.show("Localizacion guardada correctamente");
+        toastRef.current.show("Localizacion guardada correctamente. \nLongitud:" + location.longitude + 
+            "\nLatitid: "+location.latitude, 5000);
         setIsVisibleMap(false);
     }
 
