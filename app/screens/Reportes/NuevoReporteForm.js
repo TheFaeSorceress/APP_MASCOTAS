@@ -6,25 +6,35 @@ import {
     ScrollView,
     Alert,
     Dimensions,
-    Picker,
+    Picker
 } from "react-native";
-import { Icon, Avatar, Image, Input, Button } from "react-native-elements";
+import { Icon, Avatar, Image, Input, Button} from "react-native-elements";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import Modal from "../../components/Modal";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
+import { map, size, filter } from "lodash";
+
 
 export default function NuevoReporteForm(props) {
-    const {toastRef, setAnimales, mascota} = props;
+    const {toastRef, setAnimales, mascota, navigation} = props;
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [locationPet, setLocationPet] = useState(null);
-    const [imageSelected, setImageSelected] = useState([]);
-
+    const [imagesSelected, setImagesSelected] = useState([]);
 
     const savePet = () =>{
-        console.log(imageSelected);
-    }
+        //if(!mascota){
+            //toastRef.current.show("Todos los campos del formulario son obligatorios");
+        //}else if(size(imageSelected)){
+            //toastRef.current.show("El restaurante debe tener al menos una foto");
+        //}
+        if(!locationPet){
+            toastRef.current.show("Tienes que dar una localización en el mapa");
+        }else{
+            console.log("OK");
+        }
+    };
 
     return (
         <ScrollView style={StyleSheet.ScrollView}>
@@ -33,11 +43,12 @@ export default function NuevoReporteForm(props) {
                 setAnimales={props.setAnimales}
                 setIsVisibleMap={setIsVisibleMap}
                 navigation={props.navigation}
+                locationPet = {locationPet}
             />
             <UploadImage 
                 toastRef={toastRef}
-                imageSelected={imageSelected}
-                setImageSelected={setImageSelected}
+                imagesSelected={imagesSelected}
+                setImagesSelected={setImagesSelected}
             />
             <Button
                 title="Reportar"
@@ -57,7 +68,11 @@ export default function NuevoReporteForm(props) {
 }
 
 function FormAdd(props) {
-    const { setAnimales, navigation } = props;
+    const { 
+        setAnimales, 
+        navigation,
+        locationPet 
+    } = props;
 
     const [mascota, setMascota] = useState(
         !props.mascota
@@ -172,7 +187,7 @@ function FormAdd(props) {
                 rightIcon={{
                     type: "material-community",
                     name: "google-maps",
-                    color:"#c2c2c2",
+                    color:locationPet ? "#00a680" : "#c2c2c2",
                     onPress: () => setIsVisibleMap(true),
                 }}
                 value={mascota.Dir}
@@ -190,7 +205,7 @@ function FormAdd(props) {
 }
 
 function UploadImage(props) {
-    const {toastRef, setImageSelected, imageSelected} = props;
+    const {toastRef, setImagesSelected, imagesSelected} = props;
 
     const ImageSelect = async () => {
         const resultPermissions = await Permissions.askAsync(
@@ -212,19 +227,52 @@ function UploadImage(props) {
                     3000,
                 );
             }else{
-                setImageSelected([...imageSelected, result.uri]);
+                setImagesSelected([...imagesSelected, result.uri]);
             }
         }
     };
+
+    const removeImage = (image) => {
+        Alert.alert(
+            "Eliminar imagen",
+            "¿Estás seguro de que quieres eliminar esta imagen?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Eliminar",
+                    onPress: () => {
+                        setImagesSelected(
+                            filter(imagesSelected, (imageUrl) => imageUrl !== image)
+                        );
+                    },
+                }
+            ],
+            {cancelable: false}
+        );
+    };
+        
     return (
         <View style={styles.viewImages}>
-            <Icon
-                type="material-community"
-                name="camera"
-                color="#7a7a7a"
-                containerStyle={styles.containerIcon}
-                onPress={ImageSelect}
-            />
+            {size(imagesSelected) < 4 && (
+                <Icon
+                    type="material-community"
+                    name="camera"
+                    color="#7a7a7a"
+                    containerStyle={styles.containerIcon}
+                    onPress={ImageSelect}
+                />
+            )}
+            {map(imagesSelected, (imagePet, index) => (
+                <Avatar
+                    key={index}
+                    style={styles.miniatureStyle}
+                    source={{uri:imagePet}}
+                    onPress={() => removeImage(imagePet)}
+                />
+            ))}
         </View>
     );
 }
@@ -359,5 +407,10 @@ const styles = StyleSheet.create({
     },
     viewMapBtnSave: {
         backgroundColor: "#00a680"
+    },
+    miniatureStyle: {
+        width: 70,
+        height: 70,
+        marginRight: 10,
     }
 });
