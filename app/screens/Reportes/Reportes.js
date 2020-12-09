@@ -2,11 +2,50 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, ScrollView, Text, View, TouchableOpacity, Image } from "react-native";
 import { Icon } from "react-native-elements";
 import { ListItem, Avatar } from 'react-native-elements'
+import {firebaseApp} from "../../utils/firebase";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import ListPets from "../Reportes/ListPets";
+
+const db = firebase.firestore(firebaseApp);
 
 export default function Reportes(props) {
     const { navigation } = props;
+    const [user, setUser] = useState(null);
+    const [pets, setPets] = useState([]);
+    const [totalPets, setTotalPets] = useState(0);
+    const [startPets, setStartPets] = useState(null);
+    const limitPets = 10;
 
-    const Africa = {
+    useEffect (() => {
+        firebase.auth().onAuthStateChanged((userInfo) => {
+            setUser(userInfo);
+        });
+    }, []);
+
+    useEffect(() =>{
+        db.collection("pets")
+        .get()
+        .then((snap) => {
+            setTotalPets(snap.size);
+        });
+        const resultPets = [];
+        db.collection("pets")
+        .orderBy("createAt", "desc")
+        .limit(limitPets)
+        .get()
+        .then((response) => {
+            setStartPets(response.docs[response.docs.length -1]);
+            response.forEach((doc) => {
+                const pet = doc.data();
+                pet.id = doc.id;
+                resultPets.push(pet);
+            });
+            setPets(resultPets);
+        });
+    }, []);
+
+    /*const Africa = {
         index: 0,
         name: 'Africa',
         avatar_url: 'https://www.purina.com.au/-/media/project/purina/main/breeds/dog/dog_belgian-shepherd-dog-malinois_desktop.jpg?h=475&la=en&w=825&hash=4453F39A31F8404DF998D772EDA8D5AA',
@@ -53,7 +92,7 @@ export default function Reportes(props) {
             copia.push(nuevaMascota);
         }
         setMascotas([...copia]);
-    }
+    }*/
 
     useEffect(() => {
         return () => {
@@ -61,7 +100,7 @@ export default function Reportes(props) {
     })
 
     return (
-        <View style={styles.viewBody}>
+        /*<View style={styles.viewBody}>
             <ScrollView style={styles.viewBody}>
                 {
                     mascotas.map((l, i) => (
@@ -83,9 +122,15 @@ export default function Reportes(props) {
 
 
                         </ListItem>
-                    ))
+                    ));
                 }
             </ScrollView>
+            
+        </View>*/
+        <View style={styles.viewBody}>
+            <ListPets
+                pets = {pets}
+            />
             <Icon 
             reverse
             type="material-community"

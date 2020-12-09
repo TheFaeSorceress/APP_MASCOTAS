@@ -14,8 +14,16 @@ import * as ImagePicker from "expo-image-picker";
 import Modal from "../../components/Modal";
 import * as Location from "expo-location";
 import MapView from "react-native-maps";
+import uuid from "random-uuid-v4";
 import { map, size, filter } from "lodash";
 
+import {firebaseApp} from "../../utils/firebase";
+import firebase from "firebase/app";
+import "firebase/storage";
+import "firebase/firestore";
+const db = firebase.firestore(firebaseApp);
+
+const widthScreen = Dimensions.get("window").width;
 
 export default function NuevoReporteForm(props) {
     const {toastRef, setAnimales, mascota, navigation} = props;
@@ -26,18 +34,60 @@ export default function NuevoReporteForm(props) {
     const savePet = () =>{
         //if(!mascota){
             //toastRef.current.show("Todos los campos del formulario son obligatorios");
-        //}else if(size(imageSelected)){
-            //toastRef.current.show("El restaurante debe tener al menos una foto");
-        //}
-        if(!locationPet){
+        if(size(imagesSelected) == 0){
+            toastRef.current.show("El restaurante debe tener al menos una foto");
+        }
+        else if(!locationPet){
             toastRef.current.show("Tienes que dar una localización en el mapa");
         }else{
-            console.log("OK");
+            UploadImageStorage().then(response => {
+                db.collection("pets")
+                    .add({
+                        location: locationPet,
+                        images: response,
+                        createAt: new Date(),
+                    })
+                    .then(() => {
+                        navigation.navigate("nuevo_reporte");
+                        toastRef.current.show(
+                            "El reporte se ha enviado correctamente."
+                        )
+                    }).catch(() => {
+                        toastRef.current.show(
+                            "Error al subir el reporte, intentelo más tarde"
+                        )
+                    })
+            });
         }
+    };
+
+    const UploadImageStorage = async () => {
+        const imageBlob = [];
+
+        await Promise.all(
+            map(imagesSelected, async (image) => {
+                const response = await fetch(image);
+                const blob = await response.blob();
+                const ref = firebase.storage().ref("pets").child(uuid());
+                await ref.put(blob).then(async (result) => {
+                    await firebase
+                            .storage()
+                            .ref(`pets/${result.metadata.name}`)
+                            .getDownloadURL()
+                            .then((photoUrl) => {
+                                imageBlob.push(photoUrl);
+                            });
+                });
+            })
+        );
+        
+
+        return imageBlob;
     };
 
     return (
         <ScrollView style={StyleSheet.ScrollView}>
+                <ImagePet imagePet={imagesSelected[0]}/>
             <FormAdd
                 mascota={props.mascota}
                 setAnimales={props.setAnimales}
@@ -64,6 +114,19 @@ export default function NuevoReporteForm(props) {
                 toastRef={toastRef}
             />
         </ScrollView>
+    );
+}
+
+function ImagePet(props){
+    const {imagePet} = props;
+
+    return(
+        <View style={styles.viewPhoto}>
+            <Image 
+                source={imagePet ? {uri: imagePet} : require("../../../assets/img/no-image.png")}
+                style={{width: widthScreen, height: 200}}
+            />
+        </View>
     );
 }
 
@@ -412,5 +475,10 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         marginRight: 10,
+    },
+    viewPhoto: {
+        alignItems: "center",
+        height: 200,
+        marginBottom: 20,
     }
 });

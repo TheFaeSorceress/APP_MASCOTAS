@@ -1,0 +1,7 @@
+AIzaSyCbycAPvIniz3Fp9DlqA445Z7BA0lMQy5A
+
+Accessing credentials for brendavaldes in project app_mascotas
+Google Certificate Fingerprint:     A8:5E:6C:5D:DB:1D:B1:39:99:09:F9:C8:D5:E7:27:2C:20:18:98:65
+Google Certificate Hash (SHA-1):    A85E6C5DDB1DB1399909F9C8D5E7272C20189865
+Google Certificate Hash (SHA-256):  17F2C4C5BA3025955AAD295B262DDBC8E665873E02368D63955A5A211C1E7771
+Facebook Key Hash:                  qF5sXdsdsTmZCfnI1ecnLCAYmGU=

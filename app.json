@@ -23,6 +23,12 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
+      "package": "com.petfinder.petfinder",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCbycAPvIniz3Fp9DlqA445Z7BA0lMQy5A"
+        }
+      },
       "permissions":[
         "LOCATION",
         "ACCESS_COARSE_LOCATION",
