@@ -30,19 +30,26 @@ export default function NuevoReporteForm(props) {
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [locationPet, setLocationPet] = useState(null);
     const [imagesSelected, setImagesSelected] = useState([]);
+    const [petName, setPetName] = useState("");
 
     const savePet = () =>{
         //if(!mascota){
             //toastRef.current.show("Todos los campos del formulario son obligatorios");
+            console.log(mascota);
+        
+        
         if(size(imagesSelected) == 0){
             toastRef.current.show("El restaurante debe tener al menos una foto");
         }
-        else if(!locationPet){
+        else if(!locationPet){ 
             toastRef.current.show("Tienes que dar una localización en el mapa");
         }else{
             UploadImageStorage().then(response => {
                 db.collection("pets")
                     .add({
+                        name: mascota.name,
+                        //tipo: mascota.EspecieID,
+                        //descripcion: mascota.Descripcion,
                         location: locationPet,
                         images: response,
                         createAt: new Date(),
@@ -94,6 +101,7 @@ export default function NuevoReporteForm(props) {
                 setIsVisibleMap={setIsVisibleMap}
                 navigation={props.navigation}
                 locationPet = {locationPet}
+                setPetName = {setPetName}
             />
             <UploadImage 
                 toastRef={toastRef}
@@ -116,7 +124,6 @@ export default function NuevoReporteForm(props) {
         </ScrollView>
     );
 }
-
 function ImagePet(props){
     const {imagePet} = props;
 
@@ -134,7 +141,8 @@ function FormAdd(props) {
     const { 
         setAnimales, 
         navigation,
-        locationPet 
+        locationPet,
+        petName 
     } = props;
 
     const [mascota, setMascota] = useState(
@@ -152,6 +160,7 @@ function FormAdd(props) {
 
     const { setIsVisibleMap } = props;
 
+    const {setPetName} = props;
 
     const onChange = (e) => {
         mascota[e.target.name] = e.target.value;
