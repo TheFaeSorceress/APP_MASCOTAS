@@ -19,9 +19,11 @@ export default function Reporte(props) {
         .doc(id)
         .get()
         .then((response) => {
-            
-        }) 
-    }, [])
+            const data = response.data();
+            data.id = response.id;
+            setPet(data);
+        }); 
+    }, []);
 
     return (
         <View>
