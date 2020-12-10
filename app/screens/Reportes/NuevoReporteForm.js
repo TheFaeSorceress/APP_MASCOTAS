@@ -45,10 +45,7 @@ export default function NuevoReporteForm(props) {
     );
 
     const savePet = () => {
-        //if(!mascota){
-        //toastRef.current.show("Todos los campos del formulario son obligatorios");
         console.log(mascota);
-
 
         if (size(imagesSelected) == 0) {
             toastRef.current.show("El restaurante debe tener al menos una foto");
