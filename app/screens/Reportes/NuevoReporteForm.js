@@ -270,7 +270,9 @@ function FormAdd(props) {
                 value={mascota.Dir}
                 onChangeText={
                     (e) => {
-                        mascota.Dir = e
+                        console.log(e);
+                        console.log(mascota);
+                        mascota.Dir = e;
                         setMascota({ ...mascota });
                     }
                 }

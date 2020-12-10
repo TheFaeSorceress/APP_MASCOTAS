@@ -32,7 +32,7 @@ export default function Reporte(props) {
     }, []);
 
     if(!pet) return <Loading isVisible={true} text="Cargando..." />
-
+    console.log(pet);
     return (
        <ScrollView vertical style={styles.viewBody}>
             <Carousel
@@ -47,7 +47,7 @@ export default function Reporte(props) {
             <ReporteInfo
                 location={pet.location}
                 name={pet.name}
-                address={pet.address}
+                address={pet.direccion}
             />
        </ScrollView>
     );
@@ -70,7 +70,7 @@ function ReporteInfo(props){
 
     const listInfo = [
         {
-            text: address,
+            text: name,
             iconName: "map-marker",
             iconType: "material-community",
             action: null,
@@ -83,14 +83,25 @@ function ReporteInfo(props){
                 Información sobre la mascota
             </Text>
             <Map location={location} name={name} height={100}/>
-            {map(listInfo, (item) => {
-                <ListItem></ListItem>
-            })}
+           
+                <ListItem 
+                    title="6673875719"
+                    leftIcon={{
+                        name: "phone",
+                        type: "material-community",
+                        color: "#00a680"
+                    }}
+                    containerStyle= {styles.containerListItem}
+                />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    containerListItem:{
+        borderBottomColor: "#d8d8d8",
+        borderBottomWidth: 1
+    },
     viewBody: {
         flex: 1,
         backgroundColor: "#fff"

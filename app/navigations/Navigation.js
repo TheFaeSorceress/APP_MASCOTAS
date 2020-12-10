@@ -25,9 +25,6 @@ export default function Navigation(){
                 <Tab.Screen name="micuenta" 
                 component={MiCuentaStack}
                 options={{title: "Mi Cuenta"}}/>
-                <Tab.Screen name="mapa" 
-                component={MapaStack}
-                options={{title: "Mapa"}}/>
                 <Tab.Screen name="reportes" 
                 component={ReportesStack}
                 options={{title: "Reportes"}}/>

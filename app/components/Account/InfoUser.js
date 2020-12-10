@@ -15,10 +15,10 @@ export default function InfoUser(){
         </Avatar>
         <View>
             <Text style={styles.displayName}>
-                Brenda Valdés
+                Adrian Diaz
             </Text>
             <Text>
-                brenda.leticia.vp@gmail.com
+                jesusadriandiazorozco@gmail.com
             </Text>
         </View>
     </View>
