@@ -8,7 +8,7 @@ import {
     Dimensions,
     Picker
 } from "react-native";
-import { Icon, Avatar, Image, Input, Button} from "react-native-elements";
+import { Icon, Avatar, Image, Input, Button } from "react-native-elements";
 import * as Permissions from "expo-permissions";
 import * as ImagePicker from "expo-image-picker";
 import Modal from "../../components/Modal";
@@ -17,7 +17,7 @@ import MapView from "react-native-maps";
 import uuid from "random-uuid-v4";
 import { map, size, filter } from "lodash";
 
-import {firebaseApp} from "../../utils/firebase";
+import { firebaseApp } from "../../utils/firebase";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
@@ -26,24 +26,36 @@ const db = firebase.firestore(firebaseApp);
 const widthScreen = Dimensions.get("window").width;
 
 export default function NuevoReporteForm(props) {
-    const {toastRef, setAnimales, mascota, navigation} = props;
+    const { toastRef, setAnimales, navigation } = props;
     const [isVisibleMap, setIsVisibleMap] = useState(false);
     const [locationPet, setLocationPet] = useState(null);
     const [imagesSelected, setImagesSelected] = useState([]);
     const [petName, setPetName] = useState("");
 
-    const savePet = () =>{
+    const [mascota, setMascota] = useState(
+        !props.mascota
+            ? {
+                tipoReporteID: -1,
+                EspecieID: -1,
+                TamanoID: -1,
+                ColorID: -1,
+                Direccion: "",
+            }
+            : props.mascota
+    );
+
+    const savePet = () => {
         //if(!mascota){
-            //toastRef.current.show("Todos los campos del formulario son obligatorios");
-            console.log(mascota);
-        
-        
-        if(size(imagesSelected) == 0){
+        //toastRef.current.show("Todos los campos del formulario son obligatorios");
+        console.log(mascota);
+
+
+        if (size(imagesSelected) == 0) {
             toastRef.current.show("El restaurante debe tener al menos una foto");
         }
-        else if(!locationPet){ 
+        else if (!locationPet) {
             toastRef.current.show("Tienes que dar una localización en el mapa");
-        }else{
+        } else {
             UploadImageStorage().then(response => {
                 db.collection("pets")
                     .add({
@@ -78,32 +90,33 @@ export default function NuevoReporteForm(props) {
                 const ref = firebase.storage().ref("pets").child(uuid());
                 await ref.put(blob).then(async (result) => {
                     await firebase
-                            .storage()
-                            .ref(`pets/${result.metadata.name}`)
-                            .getDownloadURL()
-                            .then((photoUrl) => {
-                                imageBlob.push(photoUrl);
-                            });
+                        .storage()
+                        .ref(`pets/${result.metadata.name}`)
+                        .getDownloadURL()
+                        .then((photoUrl) => {
+                            imageBlob.push(photoUrl);
+                        });
                 });
             })
         );
-        
+
 
         return imageBlob;
     };
 
     return (
         <ScrollView style={StyleSheet.ScrollView}>
-                <ImagePet imagePet={imagesSelected[0]}/>
+            <ImagePet imagePet={imagesSelected[0]} />
             <FormAdd
-                mascota={props.mascota}
+                setMascota={setMascota}
+                mascota={mascota}
                 setAnimales={props.setAnimales}
                 setIsVisibleMap={setIsVisibleMap}
                 navigation={props.navigation}
-                locationPet = {locationPet}
-                setPetName = {setPetName}
+                locationPet={locationPet}
+                setPetName={setPetName}
             />
-            <UploadImage 
+            <UploadImage
                 toastRef={toastRef}
                 imagesSelected={imagesSelected}
                 setImagesSelected={setImagesSelected}
@@ -115,52 +128,44 @@ export default function NuevoReporteForm(props) {
                 style={{ margin: 15 }}
                 onPress={savePet}
             />
-            <Map 
-                isVisibleMap={isVisibleMap} 
-                setIsVisibleMap={setIsVisibleMap} 
+            <Map
+                isVisibleMap={isVisibleMap}
+                setIsVisibleMap={setIsVisibleMap}
                 setLocationPet={setLocationPet}
                 toastRef={toastRef}
             />
         </ScrollView>
     );
 }
-function ImagePet(props){
-    const {imagePet} = props;
 
-    return(
+
+function ImagePet(props) {
+    const { imagePet } = props;
+
+    return (
         <View style={styles.viewPhoto}>
-            <Image 
-                source={imagePet ? {uri: imagePet} : require("../../../assets/img/no-image.png")}
-                style={{width: widthScreen, height: 200}}
+            <Image
+                source={imagePet ? { uri: imagePet } : require("../../../assets/img/no-image.png")}
+                style={{ width: widthScreen, height: 200 }}
             />
         </View>
     );
 }
 
 function FormAdd(props) {
-    const { 
-        setAnimales, 
+    const {
+        setAnimales,
         navigation,
         locationPet,
-        petName 
+        petName,
+        mascota,
+        setMascota,
     } = props;
-
-    const [mascota, setMascota] = useState(
-        !props.mascota
-            ? {
-                tipoReporteID: -1,
-                EspecieID: -1,
-                TamanoID: -1,
-                ColorID: -1,
-                Direccion: "",
-            }
-            : props.mascota
-    );
 
 
     const { setIsVisibleMap } = props;
 
-    const {setPetName} = props;
+    const { setPetName } = props;
 
     const onChange = (e) => {
         mascota[e.target.name] = e.target.value;
@@ -173,9 +178,10 @@ function FormAdd(props) {
                 value={mascota.name}
                 placeholder="Nombre de la mascota"
                 containerStyle={styles.input}
-                onChange={
+                onChangeText={
                     (e) => {
-                        mascota.name = e.target.value
+                        console.log(e);
+                        mascota.name = e
                         setMascota({ ...mascota });
                     }
                 }
@@ -244,9 +250,9 @@ function FormAdd(props) {
                 placeholder="Descripción"
                 containerStyle={styles.input}
                 value={mascota.Descripcion}
-                onChange={
+                onChangeText={
                     (e) => {
-                        mascota.Descripcion = e.target.value
+                        mascota.Descripcion = e
                         setMascota({ ...mascota });
                     }
                 }
@@ -259,13 +265,13 @@ function FormAdd(props) {
                 rightIcon={{
                     type: "material-community",
                     name: "google-maps",
-                    color:locationPet ? "#00a680" : "#c2c2c2",
+                    color: locationPet ? "#00a680" : "#c2c2c2",
                     onPress: () => setIsVisibleMap(true),
                 }}
                 value={mascota.Dir}
-                onChange={
+                onChangeText={
                     (e) => {
-                        mascota.Dir = e.target.value
+                        mascota.Dir = e
                         setMascota({ ...mascota });
                     }
                 }
@@ -277,28 +283,28 @@ function FormAdd(props) {
 }
 
 function UploadImage(props) {
-    const {toastRef, setImagesSelected, imagesSelected} = props;
+    const { toastRef, setImagesSelected, imagesSelected } = props;
 
     const ImageSelect = async () => {
         const resultPermissions = await Permissions.askAsync(
             Permissions.CAMERA_ROLL
         );
-        if(resultPermissions === "denied"){
+        if (resultPermissions === "denied") {
             toastRef.current.show(
                 "Debe aceptar los permisos de la galeria para seleccionar imagen de la mascota",
                 3000
             );
-        }else{
+        } else {
             const result = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
-                aspect: [4,3],
+                aspect: [4, 3],
             });
-            if(result.cancelled){
+            if (result.cancelled) {
                 toastRef.current.show(
                     "Has cerrado la galeria sin seleccionar ninguna imagen",
                     3000,
                 );
-            }else{
+            } else {
                 setImagesSelected([...imagesSelected, result.uri]);
             }
         }
@@ -322,10 +328,10 @@ function UploadImage(props) {
                     },
                 }
             ],
-            {cancelable: false}
+            { cancelable: false }
         );
     };
-        
+
     return (
         <View style={styles.viewImages}>
             {size(imagesSelected) < 4 && (
@@ -341,7 +347,7 @@ function UploadImage(props) {
                 <Avatar
                     key={index}
                     style={styles.miniatureStyle}
-                    source={{uri:imagePet}}
+                    source={{ uri: imagePet }}
                     onPress={() => removeImage(imagePet)}
                 />
             ))}
@@ -352,20 +358,20 @@ function UploadImage(props) {
 function Map(props) {
     const { isVisibleMap, setIsVisibleMap, setLocationPet, toastRef } = props;
     const [location, setLocation] = useState(null);
-    
+
 
     useEffect(() => {
-        (async ()=> {
+        (async () => {
             const resultPermissions = await Permissions.askAsync(
                 Permissions.LOCATION
             );
             const statusPermissions = resultPermissions.permissions.location.status;
-            if(statusPermissions !== "granted"){
+            if (statusPermissions !== "granted") {
                 toastRef.current.show(
                     "Tienes que aceptar los permisos de localizacion para guardar la direccion del reporte",
                     3000
                 );
-            }else{
+            } else {
                 const loc = await Location.getCurrentPositionAsync({});
                 setLocation({
                     latitude: loc.coords.latitude,
@@ -376,15 +382,15 @@ function Map(props) {
             }
         })()
         return () => {
-            
+
         }
     }, [])
 
     const confirmLocation = () => {
         console.log(location)
         setLocationPet(location);
-        toastRef.current.show("Localizacion guardada correctamente. \nLongitud:" + location.longitude + 
-            "\nLatitid: "+location.latitude, 5000);
+        toastRef.current.show("Localizacion guardada correctamente. \nLongitud:" + location.longitude +
+            "\nLatitid: " + location.latitude, 5000);
         setIsVisibleMap(false);
     }
 
@@ -398,7 +404,7 @@ function Map(props) {
                         showUserLocation={true}
                         onRegionChange={(region) => setLocation(region)}
                     >
-                        <MapView.Marker 
+                        <MapView.Marker
                             coordinate={{
                                 latitude: location.latitude,
                                 longitude: location.longitude
@@ -408,18 +414,18 @@ function Map(props) {
                     </MapView>
                 )}
                 <View style={styles.viewMapBtn}>
-                        <Button 
-                            title="Guardar Ubicacion" 
-                            containerStyle={styles.viewMapBtnContainerSave}
-                            buttonStyle={styles.viewMapBtnSave}
-                            onPress={() => confirmLocation()}
-                        />
-                        <Button 
-                            title="Cancelar Ubicacion" 
-                            containerStyle={styles.viewMapBtnContainerCancel}
-                            buttonStyle={styles.viewMapBtnCancel}
-                            onPress={() => setIsVisibleMap(false)}
-                        />
+                    <Button
+                        title="Guardar Ubicacion"
+                        containerStyle={styles.viewMapBtnContainerSave}
+                        buttonStyle={styles.viewMapBtnSave}
+                        onPress={() => confirmLocation()}
+                    />
+                    <Button
+                        title="Cancelar Ubicacion"
+                        containerStyle={styles.viewMapBtnContainerCancel}
+                        buttonStyle={styles.viewMapBtnCancel}
+                        onPress={() => setIsVisibleMap(false)}
+                    />
                 </View>
             </View>
         </Modal>
