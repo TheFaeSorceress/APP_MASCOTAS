@@ -2,17 +2,22 @@ import React from 'react';
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity, requireNativeComponent } from 'react-native';
 import { Image } from "react-native-elements";
 import { size } from "lodash";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ListPets(props) {
-    const {pets} = props;
+    const {pets, handleLoadMore, isLoading} = props;
+    const navigation = useNavigation();
 
     return (
         <View>
             {size(pets) > 0 ? (
                 <FlatList
                     data={pets}
-                    renderItem={(pet) => <Pet pet ={pet}/>}
+                    renderItem={(pet) => <Pet pet ={pet} navigation={navigation}/>}
                     keyExtractor={(item, index) => index.toString()}
+                    onEndReachedThreshold={0.5}
+                    onEndReached={handleLoadMore}
+                    ListFooterComponent={<FooterList isLoading={isLoading}/>}
                 />
             ) : (
                 <View style={styles.loaderPets}>
@@ -28,12 +33,15 @@ export default function ListPets(props) {
 
 function Pet(props){
     
-    const{pet} = props;
-    const { images, location, createAt } = pet.item;
-    const imagePet = images[0];
+    const{ pet, navigation } = props;
+    const { id, images, name, descripcion, direccion } = pet.item;
+    const imagePet = images ? images [0] : null;
 
     const goPet = () => {
-        
+        navigation.navigate("reporte", {
+            id,
+            name,
+        });
     };
 
     return(
@@ -52,14 +60,31 @@ function Pet(props){
                     />
                 </View>
                 <View>
-                    <Text>Aquí va el nombre</Text>
-                    <Text>Aquí va la dirección</Text>
+                    <Text style={styles.petName}>{name}</Text>
+                    <Text style={styles.petDescripcion}>{direccion}</Text>
+                    <Text style={styles.petDescripcion}>{descripcion}</Text>
                 </View>
             </View>
         </TouchableOpacity>
     );
 }
 
+function FooterList(props){
+    const {isLoading} = props;
+    if(isLoading){
+        return (
+            <View style={styles.loaderPets}>
+                <ActivityIndicator size="large"/>
+            </View>
+        )
+    }else{
+        return(
+            <View style={styles.notFoundPets}>
+                <Text>No quedan restaurantes por cargar</Text>
+            </View>
+        )
+    }
+}
 const styles = StyleSheet.create({
     loaderPets: {
         marginTop: 10,
@@ -77,8 +102,18 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
     },
-    reporteDate: {
-        paddingTop: 2,
-        color: "grey",
+    petName: {
+        fontWeight: "bold",
+        marginLeft: 5,
     },
+    petDescripcion: {
+        paddingTop:2,
+        color: "grey",
+        marginLeft: 5,
+    },
+    notFoundPets: {
+        marginTop: 10,
+        marginBottom: 20,
+        alignItems: "center",
+    }
 })

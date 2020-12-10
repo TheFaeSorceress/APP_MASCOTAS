@@ -60,9 +60,10 @@ export default function NuevoReporteForm(props) {
                 db.collection("pets")
                     .add({
                         name: mascota.name,
-                        //tipo: mascota.EspecieID,
-                        //descripcion: mascota.Descripcion,
+                        descripcion: mascota.Descripcion,
+                        tipo: mascota.tipoReporteID,
                         location: locationPet,
+                        direccion: mascota.Direccion,
                         images: response,
                         createAt: new Date(),
                     })
@@ -137,7 +138,6 @@ export default function NuevoReporteForm(props) {
         </ScrollView>
     );
 }
-
 
 function ImagePet(props) {
     const { imagePet } = props;

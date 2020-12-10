@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, ScrollView, Text, View, TouchableOpacity, Image } from "react-native";
 import { Icon } from "react-native-elements";
-import { ListItem, Avatar } from 'react-native-elements'
+import { useFocusEffect } from '@react-navigation/native';
+import { ListItem, Avatar } from 'react-native-elements';
 import {firebaseApp} from "../../utils/firebase";
 import firebase from "firebase/app";
 import "firebase/firestore";
@@ -15,6 +16,7 @@ export default function Reportes(props) {
     const [pets, setPets] = useState([]);
     const [totalPets, setTotalPets] = useState(0);
     const [startPets, setStartPets] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const limitPets = 10;
 
     useEffect (() => {
@@ -23,27 +25,55 @@ export default function Reportes(props) {
         });
     }, []);
 
-    useEffect(() =>{
-        db.collection("pets")
-        .get()
-        .then((snap) => {
-            setTotalPets(snap.size);
-        });
-        const resultPets = [];
-        db.collection("pets")
-        .orderBy("createAt", "desc")
-        .limit(limitPets)
-        .get()
-        .then((response) => {
-            setStartPets(response.docs[response.docs.length -1]);
-            response.forEach((doc) => {
-                const pet = doc.data();
-                pet.id = doc.id;
-                resultPets.push(pet);
+    useFocusEffect(
+        useCallback(() =>{
+            db.collection("pets")
+            .get()
+            .then((snap) => {
+                setTotalPets(snap.size);
             });
-            setPets(resultPets);
-        });
-    }, []);
+            const resultPets = [];
+            db.collection("pets")
+            .orderBy("createAt", "desc")
+            .limit(limitPets)
+            .get()
+            .then((response) => {
+                setStartPets(response.docs[response.docs.length -1]);
+                response.forEach((doc) => {
+                    const pet = doc.data();
+                    pet.id = doc.id;
+                    resultPets.push(pet);
+                });
+                setPets(resultPets);
+            });
+        }, [])
+    );
+
+
+    const handleLoadMore = () => {
+        const resultPets = [];
+        pets.length < totalPets && setIsLoading(true);
+        db.collection("pets")
+            .orderBy("createAt", "desc")
+            .startAfter(startPets.data().createAt)
+            .limit(limitPets)
+            .get()
+            .then(response => {
+                if(response.docs.lenght > 0){
+                    setStartPets(response.docs[response.docs.length - 1]);
+                }else{
+                    setIsLoading(false);
+                }
+                response.forEach((doc) => {
+                    const pet = doc.data();
+                    pet.id = doc.id;
+                    resultPets.push({pet});
+                });
+
+                setPets([...pets, ...resultPets]);
+
+            });
+    };
 
     /*const Africa = {
         index: 0,
@@ -130,6 +160,8 @@ export default function Reportes(props) {
         <View style={styles.viewBody}>
             <ListPets
                 pets = {pets}
+                handleLoadMore = {handleLoadMore} 
+                isLoading = {isLoading}
             />
             <Icon 
             reverse
