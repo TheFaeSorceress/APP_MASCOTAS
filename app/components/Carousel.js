@@ -13,7 +13,7 @@ export default function CarouselImages(props) {
     <Carousel
         layout={"default"}
         data={arrayImages}
-        slideWidth={width}
+        sliderWidth={width}
         itemWidth={width}
         renderItem={renderItem}
     />

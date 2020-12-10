@@ -2,10 +2,12 @@ import React from 'react';
 import {StyleSheet, View} from "react-native"
 import {ListItem} from "react-native-elements"
 import {map} from "lodash";
+import { useNavigation } from "@react-navigation/native";
 
 export default function AccountOptions(){
+    
     const menuOptions = generateOptions();
-
+    const navigation = useNavigation();
     return(
         <View>
             {map(menuOptions, (menu, index) => (
@@ -25,11 +27,27 @@ export default function AccountOptions(){
                     containerStyle={styles.menuItem}
                 />
             ))}
+            <ListItem
+                    title={"Mostrar mis reportes"}
+                    leftIcon={{
+                        type: "material-community",
+                        name: "card-text-outline",
+                        color: "#ccc",
+                    }}
+                    rightIcon={{
+                        type: "material-community",
+                        name: "chevron-right",
+                        color: "#ccc",
+                    }}
+                    containerStyle={styles.menuItem}
+                    onPress = {() => navigation.navigate("mis_reportes")}
+                />
         </View>
     );
 }
 
 function generateOptions(){
+    
     return[
         {
             title: "Cambiar Nombre y Apellidos",

@@ -16,6 +16,7 @@ import * as Location from "expo-location";
 import MapView from "react-native-maps";
 import uuid from "random-uuid-v4";
 import { map, size, filter } from "lodash";
+import { useNavigation } from "@react-navigation/native";
 
 import { firebaseApp } from "../../utils/firebase";
 import firebase from "firebase/app";
@@ -63,6 +64,7 @@ export default function NuevoReporteForm(props) {
                         direccion: mascota.Direccion,
                         images: response,
                         createAt: new Date(),
+                        control: 0
                     })
                     .then(() => {
                         navigation.navigate("nuevo_reporte");

@@ -10,7 +10,7 @@ import ListPets from "../Reportes/ListPets";
 
 const db = firebase.firestore(firebaseApp);
 
-export default function Reportes(props) {
+export default function MisReportes(props) {
     const { navigation } = props;
     const [user, setUser] = useState(null);
     const [pets, setPets] = useState([]);
@@ -30,27 +30,24 @@ export default function Reportes(props) {
             db.collection("pets")
             .get()
             .then((snap) => {
-                const resultFinal = resultPets.filter(mascota => mascota.control === 0);
-                setTotalPets(snap.size);
+                const resultFinal = snap.filter(mascota => mascota.control === 0);
+                setTotalPets(resultFinal.size);
             });
-
             const resultPets = [];
-
             db.collection("pets")
             .orderBy("createAt", "desc")
             .limit(limitPets)
             .get()
             .then((response) => {
-                console.log(response.docs);
                 setStartPets(response.docs[response.docs.length -1]);
                 response.forEach((doc) => {
                     const pet = doc.data();
                     pet.id = doc.id;
-                    console.log(pet);
                     resultPets.push(pet);
                 });
                 const resultFinal = resultPets.filter(mascota => mascota.control === 0);
-                setPets(resultPets);
+                //console.log(resultFinal);
+                setPets(resultFinal);
             });
         }, [])
     );
@@ -81,28 +78,18 @@ export default function Reportes(props) {
             });
     };
 
-    
-
     useEffect(() => {
         return () => {
         }
     })
 
     return (
-        
+
         <View style={styles.viewBody}>
             <ListPets
                 pets = {pets}
                 handleLoadMore = {handleLoadMore} 
                 isLoading = {isLoading}
-            />
-            <Icon 
-            reverse
-            type="material-community"
-            name="plus"
-            color="#EDB506"
-            containerStyle = {styles.btnContainer}	
-            onPress = {() => navigation.navigate("nuevo_reporte")}
             />
         </View>
     );
@@ -123,4 +110,3 @@ const styles = StyleSheet.create({
 
     },
 })
-
